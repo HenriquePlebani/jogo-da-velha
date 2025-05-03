@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo da Velha</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #222;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-direction: column;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #scoreboard {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 5px;
+      margin-bottom: 20px;
+    }
+    .cell {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #444;
+      font-size: 2rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .cell:hover {
+      background-color: #555;
+    }
+    .highlight {
+      background-color: #666 !important;
+    }
+    #turn {
+      font-size: 1.2rem;
+      color: #f0a500;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Jogo da Velha</h1>
+  
+  <!-- Placar dinâmico -->
+  <div id="scoreboard">
+    <div id="scoreX">X: 0</div>
+    <div id="scoreO">O: 0</div>
+  </div>
+
+  <!-- Mensagem indicando quem está jogando -->
+  <div id="turn">Aguardando jogadores...</div>
+
+  <!-- Tabuleiro do Jogo -->
+  <div id="board"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    
+    let playerSymbol = '';
+    const boardElement = document.getElementById('board');
+    const scoreX = document.getElementById('scoreX');
+    const scoreO = document.getElementById('scoreO');
+    const turnDisplay = document.getElementById('turn');
+    const cells = [];
+
+    // Criação do tabuleiro
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      cell.addEventListener('click', () => makeMove(i));
+      cells.push(cell);
+      boardElement.appendChild(cell);
+    }
+
+    // Definir o símbolo do jogador (X ou O)
+    socket.on('set-symbol', (symbol) => {
+      playerSymbol = symbol;
+      document.querySelector('h1').innerText = `Você é o jogador ${symbol}`;
+    });
+
+    // Quando o jogo começar
+    socket.on('game-start', (message) => {
+      alert(message);
+    });
+
+    // Atualizar o tabuleiro com a jogada
+    socket.on('move-made', ({ player, index }) => {
+      cells[index].innerText = player;
+    });
+
+    // Atualizar o placar
+    socket.on('game-over', (message) => {
+      alert(message);
+      scoreX.innerText = `X: ${parseInt(scoreX.innerText.split(': ')[1]) + 1}`;
+      scoreO.innerText = `O: ${parseInt(scoreO.innerText.split(': ')[1]) + 1}`;
+    });
+
+    // Atualizar o estado do tabuleiro e pontuação
+    socket.on('game-reset', (message) => {
+      setTimeout(() => {
+        alert(message);
+        cells.forEach(cell => cell.innerText = '');
+      }, 500);
+    });
+
+    // Atualizar a vez de quem jogar
+    socket.on('turn', (message) => {
+      turnDisplay.innerText = message;
+    });
+
+    // Função para fazer uma jogada
+    function makeMove(index) {
+      if (cells[index].innerText === '') {
+        socket.emit('make-move', { player: playerSymbol, index });
+      }
+    }
+  </script>
+
+</body>
+</html>
