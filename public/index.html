@@ -1,51 +1,67 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR"> <!-- Define o idioma do documento como português do Brasil -->
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ARCADE TIC-TAC-TOE</title>
+  <meta charset="UTF-8"> <!-- Define o conjunto de caracteres como UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsividade: ajusta a visualização em dispositivos móveis -->
+  <title>JOGO DA VELHA</title> <!-- Título da aba do navegador -->
+  
+  <!-- Fonte retrô estilo arcade -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <!-- Importa o arquivo de estilos CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Sobreposição com efeito de tela arcade (scanline) -->
   <div id="arcade-overlay">
-    <div class="scanline"></div>
+    <div class="scanline"></div> <!-- Provavelmente um efeito visual animado -->
   </div>
 
+  <!-- Tela de menu inicial -->
   <div id="menu-screen">
-    <h1>JOGO DA VELHA</h1>
-    
+    <h1>JOGO DA VELHA</h1> <!-- Título principal -->
+
     <div id="instructions">
-      <p>CLASSIC ARCADE GAME</p>
+      <p>CLASSIC ARCADE GAME</p> <!-- Subtítulo com estilo retrô -->
     </div>
-    
-    <button id="start-btn" class="btn">START GAME</button>
-    <button id="ai-btn" class="btn">PLAY VS COMPUTER</button>
-    
+
+    <!-- Botões de início de jogo -->
+    <button id="start-btn" class="btn">START GAME</button> <!-- Iniciar partida multiplayer -->
+    <button id="ai-btn" class="btn">PLAY VS COMPUTER</button> <!-- Jogar contra a IA -->
+
+    <!-- Configurações do jogo -->
     <div id="settings">
       <div class="setting-option">
-        <label for="sound-toggle">SOUND:</label>
-        <input type="checkbox" id="sound-toggle" checked>
+        <label for="sound-toggle">SOUND:</label> <!-- Alternador de som -->
+        <input type="checkbox" id="sound-toggle" checked> <!-- Som ativado por padrão -->
       </div>
     </div>
   </div>
 
+  <!-- Tela principal do jogo (escondida inicialmente) -->
   <div id="game-screen" style="display: none;">
-    <h1 id="player-title">PLAYER X</h1>
-    
+    <h1 id="player-title">PLAYER X</h1> <!-- Indica de quem é a vez -->
+
+    <!-- Placar dos jogadores -->
     <div id="scoreboard">
       <div id="scoreX">PLAYER 1: 0</div>
       <div id="scoreO">PLAYER 2: 0</div>
     </div>
 
+    <!-- Indicação de turno ou status do jogo -->
     <div id="turn">AWAITING PLAYERS...</div>
 
+    <!-- Tabuleiro do jogo será gerado aqui via JavaScript -->
     <div id="board"></div>
-    
+
+    <!-- Botão para retornar ao menu -->
     <button id="menu-btn" class="btn">BACK TO MENU</button>
   </div>
 
+  <!-- Importa o cliente do Socket.IO para comunicação em tempo real -->
   <script src="/socket.io/socket.io.js"></script>
+
+  <!-- Importa o script principal do jogo -->
   <script src="script.js"></script>
 </body>
 </html>
